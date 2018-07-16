@@ -1,28 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
-  
   <ItemGroup>
+    <Folder Include="wwwroot" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
-  
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.*" />
     <PackageReference Include="ServiceStack" Version="5.*" />
   </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\Exposer.ServiceInterface\Exposer.ServiceInterface.csproj" />
     <ProjectReference Include="..\Exposer.ServiceModel\Exposer.ServiceModel.csproj" />
   </ItemGroup>
+  <Target Name="RunWebpackServer" AfterTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+    <!-- Check if Node.js / NPM is installed -->
+    <Exec Command="node --version" ContinueOnError="false">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
 
-  <Target Name="OnFirstUse" BeforeTargets="Build" Condition=" !Exists('wwwroot\dist') ">
-    <Exec Command="node --version" ContinueOnError="true"><Output TaskParameter="ExitCode" PropertyName="ErrorCode" /></Exec>
+    <!-- If there's an error, tell the user to install Node -->
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+
+    <!-- Clean cache, install packages and run the dev server -->
+    <Message Importance="high" Text="Running Webpack Dev Server..." />
+    <Exec Command="npm start" />
   </Target>
-  
 </Project>

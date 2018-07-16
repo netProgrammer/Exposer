@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -44,13 +42,12 @@ namespace Exposer
         // Configure your AppHost with the necessary configuration and dependencies your App needs
         public override void Configure(Container container)
         {
-            Plugins.Add(new TemplatePagesFeature()); // enable server-side rendering, see: http://templates.servicestack.net
-
-            SetConfig(new HostConfig
+            base.SetConfig(new HostConfig
             {
-                AddRedirectParamsToQueryString = true,
                 DebugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false)
             });
+
+            Plugins.Add(new TemplatePagesFeature());
         }
     }
 }
